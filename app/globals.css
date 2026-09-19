@@ -1,26 +1,195 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-orange: #ff8800;
+  --color-orange-hover: #e06900;
+  --color-orange-deep: #d15a00;
+  --color-brand: #0e3b2e;
+  --font-sans: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+  --font-display: ui-serif, "Iowan Old Style", "Palatino Linotype", Georgia, serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+html {
+  scroll-behavior: smooth;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Loading splash logo breathing */
+@keyframes splash-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.96);
+    opacity: 0.85;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Slim styled scrollbar for scrollable modal bodies */
+.modal-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #ff8500 #f3f3f3;
+}
+.modal-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.modal-scroll::-webkit-scrollbar-track {
+  background: #f3f3f3;
+  border-radius: 999px;
+}
+.modal-scroll::-webkit-scrollbar-thumb {
+  background: #ff8500;
+  border-radius: 999px;
+}
+.modal-scroll::-webkit-scrollbar-thumb:hover {
+  background: #e06900;
+}
+
+/* =========================================================
+   BUTTON SYSTEM — idle / hover / selected for every variant.
+   Theme: orange #ff8500 primary, dark-green #0e3b2e ink,
+   warm cream surfaces, white pill secondaries.
+
+   Usage:
+     .btn-primary    orange CTA (Add to order, Checkout, Check)
+     .btn-secondary  white pill w/ tan border (cart, account,
+                     branch, sign-in)
+     .btn-option     selectable option tile (delivery/collection,
+                     ASAP/scheduled, tips — pair with [aria-pressed]
+                     or .btn-option-selected)
+     .btn-ghost      quiet text row (links inside modals)
+     .btn-danger     destructive (clear cart, delete)
+   All get :active press feedback and keyboard focus rings.
+========================================================= */
+
+:where(button, a, [role="button"]):focus-visible {
+  outline: 2px solid #ff8500;
+  outline-offset: 2px;
+}
+
+@layer components {
+  /* ---------- Primary — solid orange CTA ---------- */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-[#ff8500] font-bold text-white transition-all duration-150;
+    box-shadow: 0 6px 18px rgba(255, 133, 0, 0.3);
+  }
+  .btn-primary:hover {
+    @apply bg-[#f07d00];
+    box-shadow: 0 8px 22px rgba(255, 133, 0, 0.4);
+  }
+  .btn-primary:active {
+    transform: scale(0.97);
+    box-shadow: 0 3px 10px rgba(255, 133, 0, 0.3);
+  }
+  .btn-primary:disabled {
+    @apply cursor-not-allowed bg-[#f3b57e] text-white/80;
+    box-shadow: none;
+    transform: none;
+  }
+
+  /* ---------- Secondary — white pill w/ tan border ---------- */
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-[#d8d0c5] bg-white font-semibold text-[#15181a] transition-all duration-150;
+  }
+  .btn-secondary:hover {
+    @apply border-[#ff8500] bg-orange-50;
+  }
+  .btn-secondary:active {
+    transform: scale(0.97);
+  }
+  .btn-secondary:disabled {
+    @apply cursor-not-allowed border-[#e9e3db] bg-white text-[#b9b9b9];
+    transform: none;
+  }
+
+  /* ---------- Option tile — selectable state button ----------
+     Idle: light grey. Hover: soft warm tint. Selected: solid
+     orange. Driven by aria-pressed="true" automatically, or
+     by adding .btn-option-selected. */
+  .btn-option {
+    @apply inline-flex items-center justify-center gap-2 rounded-[10px] bg-[#ffffff] font-semibold text-[#15181a] transition-all duration-150;
+  }
+  .btn-option:hover {
+    @apply bg-[#ffffff] text-[#000000];
+  }
+  .btn-option:active {
+    transform: scale(0.98);
+  }
+  .btn-option-selected,
+  .btn-option[aria-pressed="true"] {
+    @apply bg-[#ff8500] text-white;
+    box-shadow: 0 4px 14px rgba(255, 133, 0, 0.35);
+  }
+  .btn-option-selected:hover,
+  .btn-option[aria-pressed="true"]:hover {
+    @apply bg-[#f07d00] text-white;
+  }
+
+  /* ---------- Ghost — quiet text button ---------- */
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full font-semibold text-[#4a5157] transition-colors duration-150;
+  }
+  .btn-ghost:hover {
+    @apply bg-[#f5f1eb] text-[#ff8500];
+  }
+  .btn-ghost:active {
+    @apply bg-[#fde9dc];
+  }
+
+  /* ---------- Danger — destructive ---------- */
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-[#e5484d] font-bold text-white transition-all duration-150;
+  }
+  .btn-danger:hover {
+    @apply bg-[#d13438];
+    box-shadow: 0 6px 18px rgba(229, 72, 77, 0.3);
+  }
+  .btn-danger:active {
+    transform: scale(0.97);
+  }
+
+  /* ---------- Row — full-width list row w/ pink hover ----------
+     The account-page treatment: idle white, hover peach bg +
+     orange text, matching the cart drawer surface. */
+  .btn-row {
+    @apply flex w-full items-center justify-between text-left font-semibold text-[#15181a] transition-colors duration-150;
+  }
+  .btn-row:hover {
+    @apply bg-[#fde9dc] text-[#ff8500];
+  }
+  .btn-row:active {
+    @apply bg-[#fbdfcd];
+  }
+}
+
+/* =========================================================
+   GLOBAL SCROLLBAR — thin orange-on-cream for the whole site
+========================================================= */
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #ff8500 transparent;
+}
+
+/* Webkit (Chrome, Edge, Safari) */
+*::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: #d4c8bb;
+  border-radius: 999px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: #ff8500;
+}
+
+/* Modal-specific override — solid track */
+.modal-scroll::-webkit-scrollbar-track {
+  background: #f3f3f3;
 }
