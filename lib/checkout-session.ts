@@ -95,9 +95,15 @@ export interface PlacedOrder extends CheckoutSession {
 
 /* =========================================================
    Session persistence (checkout → payment → confirmation)
+
+   All storage access is guarded so these helpers can be called
+   safely during SSR/prerendering (no `window` on the server) —
+   reads return null and writes are no-ops there.
 ========================================================= */
 
 export function saveCheckoutSession(session: CheckoutSession): void {
+  if (typeof window === "undefined") return;
+
   window.sessionStorage.setItem(
     CHECKOUT_SESSION_KEY,
     JSON.stringify(session)
@@ -105,6 +111,8 @@ export function saveCheckoutSession(session: CheckoutSession): void {
 }
 
 export function readCheckoutSession(): CheckoutSession | null {
+  if (typeof window === "undefined") return null;
+
   try {
     const raw = window.sessionStorage.getItem(CHECKOUT_SESSION_KEY);
     if (!raw) return null;
@@ -179,6 +187,8 @@ export function placeOrder(
 }
 
 export function readPlacedOrder(): PlacedOrder | null {
+  if (typeof window === "undefined") return null;
+
   try {
     const raw = window.sessionStorage.getItem(ORDER_KEY);
     if (!raw) return null;
@@ -199,10 +209,14 @@ export function readPlacedOrder(): PlacedOrder | null {
 ========================================================= */
 
 export function saveSelectedPaymentMethod(method: PaymentMethod): void {
+  if (typeof window === "undefined") return;
+
   window.sessionStorage.setItem(PAYMENT_METHOD_KEY, method);
 }
 
 export function readSelectedPaymentMethod(): PaymentMethod | null {
+  if (typeof window === "undefined") return null;
+
   const raw = window.sessionStorage.getItem(PAYMENT_METHOD_KEY);
 
   return raw === "cash" || raw === "card" || raw === "wallet" ? raw : null;
