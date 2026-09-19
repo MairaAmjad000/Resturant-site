@@ -28,22 +28,31 @@ html {
 
 /* Slim styled scrollbar for scrollable modal bodies */
 .modal-scroll {
+  /* Firefox */
   scrollbar-width: thin;
-  scrollbar-color: #ff8500 #f3f3f3;
+  scrollbar-color: #ff8500 transparent;
 }
-.modal-scroll::-webkit-scrollbar {
-  width: 6px;
-}
-.modal-scroll::-webkit-scrollbar-track {
-  background: #f3f3f3;
-  border-radius: 999px;
-}
-.modal-scroll::-webkit-scrollbar-thumb {
-  background: #ff8500;
-  border-radius: 999px;
-}
-.modal-scroll::-webkit-scrollbar-thumb:hover {
-  background: #e06900;
+
+/* Chromium/Safari — custom slim scrollbar. The standard properties must be
+   auto here, otherwise the browser ignores the ::-webkit-scrollbar rules. */
+@supports selector(::-webkit-scrollbar) {
+  .modal-scroll {
+    scrollbar-width: auto;
+    scrollbar-color: auto;
+  }
+  .modal-scroll::-webkit-scrollbar {
+    width: 6px;
+  }
+  .modal-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .modal-scroll::-webkit-scrollbar-thumb {
+    background: #ff8500;
+    border-radius: 999px;
+  }
+  .modal-scroll::-webkit-scrollbar-thumb:hover {
+    background: #e06900;
+  }
 }
 
 /* =========================================================
@@ -173,6 +182,15 @@ html {
   scrollbar-color: #ff8500 transparent;
 }
 
+/* Chromium/Safari: re-enable the ::-webkit-scrollbar rules below —
+   they are ignored while scrollbar-width/scrollbar-color are set. */
+@supports selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-width: auto;
+    scrollbar-color: auto;
+  }
+}
+
 /* Webkit (Chrome, Edge, Safari) */
 *::-webkit-scrollbar {
   width: 7px;
@@ -189,7 +207,3 @@ html {
   background: #ff8500;
 }
 
-/* Modal-specific override — solid track */
-.modal-scroll::-webkit-scrollbar-track {
-  background: #f3f3f3;
-}

@@ -229,14 +229,10 @@ function AuthModal({ onClose, onSuccess }: AuthModalProps) {
       ===================================================== */}
 
       <div
-        className={`relative w-full max-w-[440px] overflow-y-auto rounded-[16px] bg-white px-[30px] py-[32px] shadow-[0_20px_60px_rgba(0,0,0,0.25)] modal-scroll ${
-          isLogin
-            ? "max-h-[calc(100vh-24px)]"
-            : "max-h-[calc(100vh-24px)]"
-        }`}
+        className="relative w-full max-w-[440px] overflow-hidden rounded-[16px] bg-white shadow-[0_20px_60px_rgba(0,0,0,0.25)]"
         onMouseDown={(event) => event.stopPropagation()}
       >
-        {/* Close */}
+        {/* Close — pinned to the frame so it stays visible while the form scrolls */}
         <button
           type="button"
           onClick={onClose}
@@ -245,6 +241,9 @@ function AuthModal({ onClose, onSuccess }: AuthModalProps) {
         >
           <X className="h-[14px] w-[14px]" />
         </button>
+
+        {/* Scrollable form body — its scrollbar is clipped round by the frame above */}
+        <div className="modal-scroll max-h-[calc(100vh-24px)] overflow-y-auto px-[30px] py-[32px]">
 
         {/* =================================================
             LOGIN
@@ -583,6 +582,7 @@ function AuthModal({ onClose, onSuccess }: AuthModalProps) {
             </form>
           </>
         )}
+        </div>
       </div>
     </div>
   );
