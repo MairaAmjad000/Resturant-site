@@ -28,7 +28,7 @@ export default function MenuItemCard({
   onDecrease,
 }: MenuItemCardProps) {
   return (
-    <article className="flex items-start justify-between gap-4 border-b border-[#e9e3db] py-5 last:border-b-0">
+    <article className="border-b border-[#e9e3db] py-5 last:border-b-0 sm:flex sm:items-start sm:justify-between sm:gap-4">
       {item.imageUrl && (
         <div className="relative hidden h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-[#f5f1eb] sm:block">
           <SafeImage
@@ -41,7 +41,7 @@ export default function MenuItemCard({
         </div>
       )}
 
-      <div className="min-w-0 flex-1">
+      <div className="min-w-0 sm:flex-1">
         <div className="flex items-center gap-2 border-b border-dashed border-[#d8d0c5] pb-2">
           <h3 className="min-w-0 truncate text-[17px] font-semibold tracking-[-0.17px] text-[#15181a]">
             {item.name}
@@ -77,7 +77,11 @@ export default function MenuItemCard({
         )}
       </div>
 
-      <span className="shrink-0 text-[17px] font-bold text-[#15181a]">
+      {/* Price + add control — their own full-width row on mobile so the
+          description keeps the whole card width; dissolved back into the
+          desktop flex row via display:contents. */}
+      <div className="mt-3 flex items-center justify-between gap-4 sm:contents">
+        <span className="text-[17px] font-bold text-[#15181a]">
         {item.priceLabel ? `${item.priceLabel} ` : ""}£{item.price.toFixed(2)}
       </span>
 
@@ -114,6 +118,7 @@ export default function MenuItemCard({
           <Plus className="h-[18px] w-[18px]" />
         </button>
       )}
+      </div>
     </article>
   );
 }

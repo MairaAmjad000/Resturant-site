@@ -20,7 +20,7 @@ interface SearchBarProps {
 export default function SearchBar({
   value,
   onChange,
-  placeholder = "Search the menu — try \"burger\" or \"wings\"",
+  placeholder = "Search the menu",
   resultLabel,
   noResults = false,
 }: SearchBarProps) {

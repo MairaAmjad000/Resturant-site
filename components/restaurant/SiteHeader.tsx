@@ -382,11 +382,11 @@ function AuthModal({ onClose, onSuccess }: AuthModalProps) {
                 <div className="h-px flex-1 bg-[#e2e2e2]" />
               </div>
 
-              {/* Social */}
-              <div className="flex gap-3">
+              {/* Social — stacked on phones so the nowrap labels never force a horizontal scroll, side-by-side from sm up */}
+              <div className="flex flex-col gap-3 sm:flex-row">
                 <button
                   type="button"
-                  className="flex h-[61px] flex-1 items-center justify-center gap-2 rounded-full bg-[#181818] px-3 text-[13px] font-semibold text-white transition hover:bg-black"
+                  className="flex h-[51px] w-full items-center justify-center gap-2 rounded-full bg-[#181818] px-3 text-[14px] font-semibold text-white transition hover:bg-black sm:w-auto sm:flex-1"
                 >
                   <AppleIcon />
 
@@ -397,7 +397,7 @@ function AuthModal({ onClose, onSuccess }: AuthModalProps) {
 
                 <button
                   type="button"
-                  className="flex h-[61px] flex-1 items-center justify-center gap-2 rounded-full border border-[#dedede] bg-white px-3 text-[13px] font-medium text-[#333] transition hover:bg-[#fafafa]"
+                  className="flex h-[51px] w-full items-center justify-center gap-2 rounded-full border border-[#dedede] bg-white px-3 text-[14px] font-medium text-[#333] transition hover:bg-[#fafafa] sm:w-auto sm:flex-1"
                 >
                   <GoogleIcon />
 
