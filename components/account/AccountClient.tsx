@@ -3,7 +3,7 @@
 import { useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ChevronDown, ChevronRight, X } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronRight, X } from "lucide-react";
 import {
   getServerUserSnapshot,
   getUserSnapshot,
@@ -97,6 +97,16 @@ export default function AccountClient() {
 
   return (
     <main className="mx-auto max-w-[730px] px-4 pb-20 pt-10 sm:px-6">
+      {/* ---------- Back — same pill as the checkout page ---------- */}
+      {/* <Link
+        href="/"
+        aria-label="Back to home — continue browsing the menu"
+        className="mb-5 inline-flex h-[38px] items-center gap-1.5 rounded-full border border-[#d8d0c5] bg-white px-3.5 text-[13px] font-semibold text-[#15181a] transition hover:bg-orange hover:text-white"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Back
+      </Link> */}
+
       {/* ---------- Close ---------- */}
       <Link
         href="/"

@@ -4,14 +4,14 @@ import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
+  ArrowLeft,
   Bike,
-  Clock,
   Home,
-  Calendar,
   MapPin,
 } from "lucide-react";
 import OrderSummary from "./OrderSummary";
 import UpdateInfoModal from "./UpdateInfoModal";
+import { ThemedDatePicker, ThemedTimePicker } from "./SchedulePickers";
 import {
   BAG_CHARGE,
   MIN_ORDER_TOTAL,
@@ -325,6 +325,16 @@ export default function CheckoutClient({
 
   return (
     <main className="mx-auto max-w-[1160px] px-4 pb-16 pt-8 sm:px-6">
+      {/* Back to the menu — top-left of the content */}
+      <Link
+        href="/"
+        aria-label="Back to home — continue browsing the menu"
+        className="mb-5 inline-flex h-[38px] items-center gap-1.5 rounded-full border border-[#d8d0c5] bg-white px-3.5 text-[13px] font-semibold text-[#15181a] transition hover:bg-orange hover:text-white"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Back
+      </Link>
+
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_400px]">
         {/* ============================================================
             LEFT COLUMN
@@ -728,49 +738,23 @@ export default function CheckoutClient({
                 </p>
 
                 <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                  {/* Date */}
-                  <div className={`group/date relative rounded-[10px] bg-[#f5f5f5] transition focus-within:bg-white focus-within:ring-2 focus-within:ring-[#ff8500]/60 ${scheduleError && !scheduledDate.trim() ? 'ring-2 ring-[#e5484d]/50' : ''}`}>
-                    <label
-                      htmlFor="schedule-date"
-                      className="pointer-events-none absolute left-[14px] top-[8px] z-10 text-[11px] font-medium text-[#9aa0a5]"
-                    >
-                      Date
-                    </label>
-                    <input
-                      id="schedule-date"
-                      type="date"
-                      value={scheduledDate}
-                      min={getTodayIso()}
-                      onChange={(event) =>
-                        setScheduledDate(event.target.value)
-                      }
-                      aria-label="Schedule date"
-                      className="h-[52px] w-full cursor-pointer appearance-none rounded-[10px] border-0 bg-transparent px-[14px] pb-[5px] pl-[14px] pt-[24px] text-[14px] font-semibold text-[#15181a] outline-none [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:right-3 [&::-webkit-calendar-picker-indicator]:top-1/2 [&::-webkit-calendar-picker-indicator]:z-10 [&::-webkit-calendar-picker-indicator]:h-5 [&::-webkit-calendar-picker-indicator]:w-5 [&::-webkit-calendar-picker-indicator]:-translate-y-1/2 [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0"
-                    />
-                    <Calendar className="pointer-events-none absolute right-4 top-1/2 h-[17px] w-[17px] -translate-y-1/2 text-[#ff8500] transition-colors" strokeWidth={2.2} />
-                  </div>
+                  {/* Date — themed calendar */}
+                  <ThemedDatePicker
+                    label="Date"
+                    value={scheduledDate}
+                    min={getTodayIso()}
+                    error={scheduleError && !scheduledDate.trim()}
+                    onChange={setScheduledDate}
+                  />
 
-                  {/* Time */}
-                  <div className={`group/time relative rounded-[10px] bg-[#f5f5f5] transition focus-within:bg-white focus-within:ring-2 focus-within:ring-[#ff8500]/60 ${scheduleError && !scheduledTime.trim() ? 'ring-2 ring-[#e5484d]/50' : ''}`}>
-                    <label
-                      htmlFor="schedule-time"
-                      className="pointer-events-none absolute left-[14px] top-[8px] z-10 text-[11px] font-medium text-[#9aa0a5]"
-                    >
-                      Time
-                    </label>
-                    <input
-                      id="schedule-time"
-                      type="time"
-                      value={scheduledTime}
-                      min="17:00"
-                      onChange={(event) =>
-                        setScheduledTime(event.target.value)
-                      }
-                      aria-label="Schedule time"
-                      className="h-[52px] w-full cursor-pointer appearance-none rounded-[10px] border-0 bg-transparent px-[14px] pb-[5px] pl-[14px] pt-[24px] text-[14px] font-semibold text-[#15181a] outline-none [&::-webkit-calendar-picker-indicator]:hidden"
-                    />
-                    <Clock className="pointer-events-none absolute right-4 top-1/2 h-[17px] w-[17px] -translate-y-1/2 text-[#ff8500] transition-colors" strokeWidth={2.2} />
-                  </div>
+                  {/* Time — themed slot picker */}
+                  <ThemedTimePicker
+                    label="Time"
+                    value={scheduledTime}
+                    min="17:00"
+                    error={scheduleError && !scheduledTime.trim()}
+                    onChange={setScheduledTime}
+                  />
                 </div>
 
                 {scheduleError && (!scheduledDate.trim() || !scheduledTime.trim()) && (

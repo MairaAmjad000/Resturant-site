@@ -1,15 +1,24 @@
 "use client";
 
+import { Minus, Plus } from "lucide-react";
 import type { DealItem } from "@/types/menu";
+import { MAX_ITEM_QUANTITY } from "@/lib/cart";
 
 interface DealCardProps {
   deal: DealItem;
+  quantity?: number;
   onAdd?: (dealId: string) => void;
+  onIncrease?: (dealId: string) => void;
+  onDecrease?: (dealId: string) => void;
 }
 
-export default function DealCard({ deal, onAdd }: DealCardProps) {
-  const ctaLabel = deal.ctaLabel ?? `Add deal — £${deal.price.toFixed(2)}`;
-
+export default function DealCard({
+  deal,
+  quantity = 0,
+  onAdd,
+  onIncrease,
+  onDecrease,
+}: DealCardProps) {
   return (
     <article className="rounded-2xl border border-orange/25 bg-[#fdf5ec] p-5 sm:p-6">
       <div className="flex items-center justify-between border-b border-dashed border-orange/30 pb-3">
@@ -58,13 +67,40 @@ export default function DealCard({ deal, onAdd }: DealCardProps) {
             <span className="text-2xl font-bold text-[#15181a]">£{deal.price.toFixed(2)}</span>
           </div>
 
-          <button
-            type="button"
-            onClick={() => onAdd?.(deal.id)}
-            className="w-full whitespace-nowrap rounded-full border border-orange/40 bg-white px-4 py-2 text-sm font-semibold text-[#15181a] transition-colors duration-150 hover:bg-orange hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange/40 active:scale-95 active:bg-orange-deep sm:w-auto"
-          >
-            {ctaLabel}
-          </button>
+          {/* Same + / stepper control as the menu item cards. */}
+          {quantity > 0 ? (
+            <div className="flex h-[38px] shrink-0 items-center rounded-full border border-[#d8d0c5] bg-white">
+              <button
+                type="button"
+                onClick={() => onDecrease?.(deal.id)}
+                aria-label={`Remove one ${deal.name}`}
+                className="flex h-[38px] w-[34px] items-center justify-center text-[#15181a]"
+              >
+                <Minus className="h-4 w-4" />
+              </button>
+              <span className="min-w-5 text-center text-[13px] font-semibold">
+                {quantity}
+              </span>
+              <button
+                type="button"
+                onClick={() => onIncrease?.(deal.id)}
+                disabled={quantity >= MAX_ITEM_QUANTITY}
+                aria-label={`Add another ${deal.name}`}
+                className="flex h-[38px] w-[34px] items-center justify-center text-[#15181a] disabled:opacity-40"
+              >
+                <Plus className="h-4 w-4" />
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => onAdd?.(deal.id)}
+              aria-label={`Add ${deal.name} to order`}
+              className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-full border border-[#d8d0c5] bg-white text-[#15181a] transition-colors hover:bg-[#f5f1eb] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0e3b2e]/40 active:scale-95"
+            >
+              <Plus className="h-[18px] w-[18px]" />
+            </button>
+          )}
         </div>
       </div>
     </article>

@@ -17,13 +17,22 @@ export function useStoredCart(
   const [cart, setCart] = useState<CartLine[] | null>(null);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time localStorage hydration
-    setCart(
-      parseStoredCart(
-        window.localStorage.getItem(CART_STORAGE_KEY),
-        catalog
-      )
-    );
+    const read = () => {
+      setCart(
+        parseStoredCart(
+          window.localStorage.getItem(CART_STORAGE_KEY),
+          catalog
+        )
+      );
+    };
+
+    read();
+
+    /* Cart edits made outside this component's own state (e.g. the cart
+       drawer mounted in the checkout header) dispatch this event so every
+       consumer re-reads localStorage and stays in sync. */
+    window.addEventListener("porto:cart-changed", read);
+    return () => window.removeEventListener("porto:cart-changed", read);
   }, [catalog]);
 
   return cart;

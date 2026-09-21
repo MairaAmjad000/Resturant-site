@@ -170,38 +170,26 @@ export default function CartDrawer({
         <div className="min-h-0 flex-1 overflow-y-auto px-[21px] pb-5 [scrollbar-width:thin]">
           <div className="mt-5 grid grid-cols-2 gap-[10px]">
             <button
-              type="button"
-              onClick={() => setOrderType("delivery")}
-              aria-pressed={orderType === "delivery"}
-              className="btn-option flex h-[93px] flex-col items-center justify-center rounded-[13px]"
-            >
-              <Bike className="mx-auto h-[21px] w-[21px] mt-1" />
-              <span className="mt-1 text-[14px] font-semibold">Delivery</span>
-              <span
-                className={`mt-1 text-[11px] ${
-                  orderType === "delivery" ? "text-black" : "text-black"
-                }`}
-              >
-                From 17:00
-              </span>
-            </button>
+  type="button"
+  onClick={() => setOrderType("delivery")}
+  aria-pressed={orderType === "delivery"}
+  className="btn-option flex h-[93px] flex-col items-center justify-center gap-1 rounded-[13px]"
+>
+  <Bike className="h-[21px] w-[21px]" />
+  <span className="text-[14px] font-semibold leading-none">Delivery</span>
+  <span className="text-[11px] leading-none text-black">From 17:00</span>
+</button>
 
-            <button
-              type="button"
-              onClick={() => setOrderType("collection")}
-              aria-pressed={orderType === "collection"}
-              className="btn-option flex h-[93px] flex-col items-center justify-center rounded-[13px]"
-            >
-              <ShoppingBag className="mx-auto h-[21px] w-[21px] mt-1" />
-              <span className="mt-1 text-[14px] font-semibold">Collection</span>
-              <span
-                className={`mt-1 text-[11px] ${
-                  orderType === "collection" ? "text-black" : "text-black"
-                }`}
-              >
-                From 17:00
-              </span>
-            </button>
+<button
+  type="button"
+  onClick={() => setOrderType("collection")}
+  aria-pressed={orderType === "collection"}
+  className="btn-option flex h-[93px] flex-col items-center justify-center gap-1 rounded-[13px]"
+>
+  <ShoppingBag className="h-[21px] w-[21px]" />
+  <span className="text-[14px] font-semibold leading-none">Collection</span>
+  <span className="text-[11px] leading-none text-black">From 17:00</span>
+</button>
 
           </div>
 

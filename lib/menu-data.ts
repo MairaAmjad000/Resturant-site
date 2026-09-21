@@ -93,7 +93,7 @@ export async function getSiteContent(): Promise<SiteContent> {
       "Bold flavour, freshly fired. Porto Piri Piri brings generous South Asian cooking and warm hospitality to Glasgow seven days a week.",
     navLinks: [
       { label: "Home", href: "#top" },
-      { label: "MENU", href: "#menu" },
+      { label: "Menu", href: "#menu" },
       { label: "Story", href: "#story" },
       { label: "Contact", href: "#contact" },
     ],

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { Menu, X, ShoppingBag, LogOut, Heart, Phone, Mail, Truck, ChevronDown } from "lucide-react";
 import SafeImage from "./SafeImage";
@@ -382,10 +382,10 @@ function AuthModal({ onClose, onSuccess }: AuthModalProps) {
               </div>
 
               {/* Social — stacked on phones so the nowrap labels never force a horizontal scroll, side-by-side from sm up */}
-              <div className="flex flex-col gap-3 sm:flex-row">
+              <div className="flex flex-col gap-3">
                 <button
                   type="button"
-                  className="flex h-[51px] w-full items-center justify-center gap-2 rounded-full bg-[#181818] px-3 text-[14px] font-semibold text-white transition hover:bg-black sm:w-auto sm:flex-1"
+                  className="flex h-[51px] w-full items-center justify-center gap-2 rounded-full bg-[#181818] px-3 text-[14px] font-semibold text-white transition hover:bg-black"
                 >
                   <AppleIcon />
 
@@ -396,7 +396,7 @@ function AuthModal({ onClose, onSuccess }: AuthModalProps) {
 
                 <button
                   type="button"
-                  className="flex h-[51px] w-full items-center justify-center gap-2 rounded-full border border-[#dedede] bg-white px-3 text-[14px] font-medium text-[#333] transition hover:bg-[#fafafa] sm:w-auto sm:flex-1"
+                  className="flex h-[51px] w-full items-center justify-center gap-2 rounded-full border border-[#dedede] bg-white px-3 text-[14px] font-medium text-[#333] transition hover:bg-[#fafafa]"
                 >
                   <GoogleIcon />
 
@@ -474,12 +474,12 @@ function AuthModal({ onClose, onSuccess }: AuthModalProps) {
               {/* Phone */}
               <FormInput
                 label="Phone (UK) *"
-                placeholder="+44 7911 123456"
+                placeholder="+447911123456"
                 type="tel"
                 value={registerPhone}
                 onChange={(value) => setRegisterPhone(normaliseUKPhoneInput(value))}
                 invalid={registerPhoneInvalid}
-                error="Enter a valid UK phone number starting with +44."
+                error="Enter a valid UK phone number starting with +44 (e.g. +447911123456)."
               />
 
               {/* Email */}
@@ -654,8 +654,30 @@ export default function SiteHeader({
     activeHref || "#top"
   );
 
-  const [isScrollingToSection, setIsScrollingToSection] =
-    useState(false);
+  /** Mid-scroll guard. A ref — not state — so the scroll-spy effect below
+   *  doesn't depend on it: flipping it must not tear down/re-run the effect
+   *  (the synchronous handleScroll() re-run would recompute the active
+   *  section from an in-transit scroll position and steal the highlight). */
+  const isScrollingToSectionRef = useRef(false);
+
+  /** Pending scroll-lock timers for the current nav click. A newer click
+   *  must cancel them — stale timers firing later re-applied the OLD
+   *  link's highlight and yanked the green pill off the clicked one. */
+  const scrollLockRef = useRef<{
+    settle: number | null;
+    safety: number | null;
+  }>({ settle: null, safety: null });
+
+  /* Drop any pending scroll-lock timers when the header unmounts. */
+  useEffect(() => {
+    const lock = scrollLockRef;
+    return () => {
+      if (lock.current.settle !== null)
+        window.clearInterval(lock.current.settle);
+      if (lock.current.safety !== null)
+        window.clearTimeout(lock.current.safety);
+    };
+  }, []);
 
   /* =========================================================
      AUTH ACTIONS
@@ -715,17 +737,22 @@ export default function SiteHeader({
   ========================================================= */
 
   useEffect(() => {
-    const sections = navLinks
-      .filter((link) => link.href.startsWith("#"))
-      .map((link) =>
-        document.getElementById(link.href.substring(1))
-      )
-      .filter(Boolean) as HTMLElement[];
+    const findSections = () =>
+      navLinks
+        .filter((link) => link.href.startsWith("#"))
+        .map((link) =>
+          document.getElementById(link.href.substring(1))
+        )
+        .filter(Boolean) as HTMLElement[];
 
-    if (!sections.length) return;
+    /* NOTE: sections may be empty at mount — on a client-side navigation
+       (e.g. checkout navbar → home) this header renders before the home
+       page sections exist. The spy must still attach; the retry below
+       re-collects them as they appear. */
+    let sections = findSections();
 
     const handleScroll = () => {
-      if (isScrollingToSection) return;
+      if (isScrollingToSectionRef.current) return;
 
       let currentSection = "#top";
 
@@ -746,10 +773,29 @@ export default function SiteHeader({
       passive: true,
     });
 
+    /* Re-collect the sections until all of them exist (max 5s). */
+    const expected = navLinks.filter((l) => l.href.startsWith("#")).length;
+    const collectRetry = window.setInterval(() => {
+      if (sections.length >= expected) {
+        window.clearInterval(collectRetry);
+        return;
+      }
+
+      const next = findSections();
+      if (next.length > sections.length) {
+        sections = next;
+        handleScroll();
+      }
+    }, 300);
+
+    const collectTimeout = window.setTimeout(() => window.clearInterval(collectRetry), 5000);
+
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      window.clearInterval(collectRetry);
+      window.clearTimeout(collectTimeout);
     };
-  }, [navLinks, isScrollingToSection]);
+  }, [navLinks]);
 
   /* =========================================================
      NAV CLICK
@@ -774,7 +820,16 @@ export default function SiteHeader({
     if (!target) return;
 
     setActiveSection(href);
-    setIsScrollingToSection(true);
+
+    /* Cancel any in-flight scroll lock from a previous nav click first. */
+    if (scrollLockRef.current.settle !== null) {
+      window.clearInterval(scrollLockRef.current.settle);
+    }
+    if (scrollLockRef.current.safety !== null) {
+      window.clearTimeout(scrollLockRef.current.safety);
+    }
+
+    isScrollingToSectionRef.current = true;
 
     const top =
       target.getBoundingClientRect().top +
@@ -788,10 +843,33 @@ export default function SiteHeader({
 
     window.history.pushState(null, "", href);
 
-    setTimeout(() => {
-      setIsScrollingToSection(false);
+    /* Release the scroll lock exactly when the scroll ARRIVES at the target
+       position — stillness-based detection fired early on the easing tail
+       (sub-pixel movement) and let the scroll-spy flash the intermediate
+       sections. A 2s safety net covers a cancelled animation (e.g. the
+       user wheels mid-scroll). */
+    const arrive = () => {
+      scrollLockRef.current.settle = null;
+      scrollLockRef.current.safety = null;
+      isScrollingToSectionRef.current = false;
       setActiveSection(href);
-    }, 700);
+    };
+
+    scrollLockRef.current.settle = window.setInterval(() => {
+      if (Math.abs(window.scrollY - top) >= 1) return;
+
+      if (scrollLockRef.current.settle !== null)
+        window.clearInterval(scrollLockRef.current.settle);
+      if (scrollLockRef.current.safety !== null)
+        window.clearTimeout(scrollLockRef.current.safety);
+      arrive();
+    }, 50);
+
+    scrollLockRef.current.safety = window.setTimeout(() => {
+      if (scrollLockRef.current.settle !== null)
+        window.clearInterval(scrollLockRef.current.settle);
+      arrive();
+    }, 2000);
   };
 
   /* =========================================================
@@ -896,9 +974,9 @@ export default function SiteHeader({
                   aria-current={
                     isActive ? "page" : undefined
                   }
-                  className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                  className={`rounded-full px-4 py-2 text-sm font-medium ${
                     isActive
-                      ? "bg-[#0e3b2e] text-white"
+                      ? "bg-[#0e3b2e] text-white transition-colors duration-150"
                       : "text-[#4a5157] hover:bg-[#f5f1eb] hover:text-[#15181a]"
                   }`}
                 >

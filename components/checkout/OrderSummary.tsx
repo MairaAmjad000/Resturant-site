@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Clock, ShoppingBag, Tag, Utensils, Wallet, X } from "lucide-react";
+import Link from "next/link";
+import { CirclePlus, Clock, ShoppingBag, Tag, Utensils, Wallet, X } from "lucide-react";
 import SafeImage from "@/components/restaurant/SafeImage";
 import type { CartLine } from "@/lib/cart";
 import { lineTotal, selectionsSummary } from "@/lib/cart";
@@ -28,6 +29,8 @@ interface OrderSummaryProps {
   onTipChange: (tip: number) => void;
   /** Hide the coupon box (payment step keeps the summary read-only). */
   showCoupon?: boolean;
+  /** Hide the "Add more items" link (payment step summary is read-only). */
+  showAddMore?: boolean;
   /** Show the interactive tip editor; false renders the selected tip as a static row. */
   showTipEditor?: boolean;
   /** Show a static "Cutlery: Yes/No" row (payment + confirmation). */
@@ -58,6 +61,7 @@ export default function OrderSummary({
   tip,
   onTipChange,
   showCoupon = true,
+  showAddMore = true,
   showTipEditor = true,
   cutlery,
   coupon,
@@ -233,6 +237,17 @@ export default function OrderSummary({
           );
         })}
       </ul>
+
+      {/* Add more items — back to the menu (checkout step only) */}
+      {showAddMore !== false && (
+        <Link
+          href="/#menu"
+          className="flex h-[44px] items-center justify-center gap-2 rounded-full border border-[#d8d0c5] bg-white text-[14px] font-semibold text-[#15181a] transition-colors hover:border-[#ff8500] hover:text-[#ff8500]"
+        >
+          <CirclePlus className="h-[18px] w-[18px]" />
+          Add more items
+        </Link>
+      )}
 
       {/* Timing strip */}
       <div className="flex items-center gap-2 rounded-[10px] bg-[#fdecd8] px-4 py-3">

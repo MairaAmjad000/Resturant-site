@@ -143,7 +143,7 @@ function AddressFormCard({
     }
 
     if (!isValidUKPhone(form.contactPhone)) {
-      setError("Enter a valid UK phone number starting with +44 (e.g. +44 7911 123456).");
+      setError("Enter a valid UK phone number starting with +44 (e.g. +447911123456).");
       return;
     }
 
@@ -169,7 +169,7 @@ function AddressFormCard({
           value={form.contactPhone}
           onChange={(value) => set("contactPhone", normaliseUKPhoneInput(value))}
           type="tel"
-          placeholder="+44 7911 123456"
+          placeholder="+447911123456"
           required
         />
 

@@ -20,6 +20,9 @@ export default async function ConfirmationPage() {
         logoUrl={site.logoUrl}
         logoAlt={site.name}
         currentStep="confirmation"
+        navLinks={site.navLinks}
+        categories={categories}
+        deals={deals}
       />
 
       <ConfirmationClient

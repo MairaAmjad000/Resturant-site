@@ -428,6 +428,7 @@ export default function PaymentClient({
             timingLabel={timingLabel}
             tip={session?.tip ?? 0}
             showCoupon={false}
+            showAddMore={false}
             showTipEditor={false}
             cutlery={session?.cutlery ?? false}
             coupon={session?.coupon ?? null}

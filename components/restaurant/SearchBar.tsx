@@ -14,8 +14,9 @@ interface SearchBarProps {
 
 /**
  * Themed menu search bar.
- * Warm grey field, orange focus ring, orange search icon that turns
- * dark when typing, clear button and live result count.
+ * Warm grey field with the theme's dark-green border at rest, orange focus
+ * ring, orange search icon that turns dark when typing, clear button and
+ * live result count.
  */
 export default function SearchBar({
   value,
@@ -28,7 +29,7 @@ export default function SearchBar({
 
   return (
     <div
-      className={`flex h-[54px] w-full items-center gap-3 rounded-[13px] bg-[#f5f5f5] pr-4 pl-4 transition-all duration-150 focus-within:bg-white focus-within:ring-2 focus-within:ring-[#ff8500]/60 ${
+      className={`flex h-[54px] w-full items-center gap-3 rounded-[13px] border border-white/35 bg-[#f5f5f5] pr-4 pl-4 transition-all duration-150 focus-within:border-[#ff8500]/70 focus-within:bg-white focus-within:ring-2 focus-within:ring-white/100 ${
         noResults ? "ring-1 ring-[#e5484d]/50" : ""
       }`}
       role="search"

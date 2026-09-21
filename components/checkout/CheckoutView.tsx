@@ -1,10 +1,7 @@
 "use client";
 
-import { useMemo } from "react";
 import CheckoutHeader, { type CheckoutStep } from "./CheckoutHeader";
 import CheckoutClient from "./CheckoutClient";
-import { cartQuantity, buildCartCatalog } from "@/lib/cart";
-import { useStoredCart } from "@/lib/use-stored-cart";
 import type { SiteContent } from "@/lib/menu-data";
 import type { DealItem, MenuCategory } from "@/types/menu";
 
@@ -21,20 +18,15 @@ export default function CheckoutView({
   deals,
   step = "checkout",
 }: CheckoutViewProps) {
-  const catalog = useMemo(
-    () => buildCartCatalog(categories, deals),
-    [categories, deals]
-  );
-  const cart = useStoredCart(catalog);
-  const cartCount = cart ? cartQuantity(cart) : 0;
-
   return (
     <div className="min-h-screen bg-[#f7f5f2]">
       <CheckoutHeader
         logoUrl={site.logoUrl}
         logoAlt={site.name}
         currentStep={step}
-        cartCount={cartCount}
+        navLinks={site.navLinks}
+        categories={categories}
+        deals={deals}
       />
 
       <CheckoutClient

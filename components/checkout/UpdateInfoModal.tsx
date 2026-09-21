@@ -135,14 +135,14 @@ export default function UpdateInfoModal({
             (value) => setPhone(normaliseUKPhoneInput(value)),
             phoneInvalid,
             "tel",
-            "+44 7911 123456"
+            "+447911123456"
           )}
         </div>
 
         {attempted && (firstNameInvalid || lastNameInvalid || phoneInvalid) && (
           <p className="mt-3 text-[12px] font-semibold text-[#c0392b]">
             {!isValidUKPhone(phone) && phone.trim()
-              ? "Enter a valid UK phone number starting with +44 (e.g. +44 7911 123456)."
+              ? "Enter a valid UK phone number starting with +44 (e.g. +447911123456)."
               : "Please fill in all required fields."}
           </p>
         )}

@@ -161,7 +161,7 @@ export default function ProfilePageClient() {
 
     if (phone.trim() && !isValidUKPhone(phone)) {
       setStatus("error");
-      setErrorMessage("Enter a valid UK phone number starting with +44 (e.g. +44 7911 123456).");
+      setErrorMessage("Enter a valid UK phone number starting with +44 (e.g. +447911123456).");
       return;
     }
 
@@ -288,7 +288,7 @@ export default function ProfilePageClient() {
             value={phone}
             onChange={(value) => setPhone(normaliseUKPhoneInput(value))}
             type="tel"
-            placeholder="+44 7911 123456"
+            placeholder="+447911123456"
             autoComplete="tel"
           />
 

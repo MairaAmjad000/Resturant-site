@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import { useToast } from "@/components/ui/ToastProvider";
 import SiteHeader from "./SiteHeader";
 import WhyOrderStrip from "./WhyOrderStrip";
 import FullMenu from "./FullMenu";
@@ -68,21 +69,32 @@ export default function RestaurantShell({
 
   /** Hearted item ids; hydrated after mount (SSR-safe). */
   const [favouriteIds, setFavouriteIds] = useState<Set<string>>(new Set());
+  const toast = useToast();
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time localStorage hydration
     setFavouriteIds(new Set(readFavourites()));
   }, []);
 
-  const handleToggleFavourite = useCallback((itemId: string) => {
-    const nowFavourite = toggleFavourite(itemId);
-    setFavouriteIds((current) => {
-      const next = new Set(current);
-      if (nowFavourite) next.add(itemId);
-      else next.delete(itemId);
-      return next;
-    });
-  }, []);
+  const handleToggleFavourite = useCallback(
+    (itemId: string) => {
+      const nowFavourite = toggleFavourite(itemId);
+      const itemName = catalog.get(itemId)?.name ?? "Item";
+      setFavouriteIds((current) => {
+        const next = new Set(current);
+        if (nowFavourite) next.add(itemId);
+        else next.delete(itemId);
+        return next;
+      });
+
+      if (nowFavourite) {
+        toast.success("Added to favourites", itemName);
+      } else {
+        toast.info("Removed from favourites", itemName);
+      }
+    },
+    [catalog, toast]
+  );
 
   useEffect(() => {
     const stored = parseStoredCart(
@@ -224,8 +236,6 @@ export default function RestaurantShell({
 
       <HeroBannerCarousel slides={site.bannerSlides} />
 
-      <WhyOrderStrip perks={site.perks} />
-
       <FullMenu
         categories={categories}
         deals={deals}
@@ -235,6 +245,8 @@ export default function RestaurantShell({
         onToggleFavourite={handleToggleFavourite}
         onAddItem={addItem}
         onAddDeal={addDeal}
+        onIncreaseDeal={increase}
+        onDecreaseDeal={decrease}
         onIncrease={increase}
         onDecrease={decrease}
       />
@@ -242,6 +254,8 @@ export default function RestaurantShell({
       <OurStorySection id="story" {...site.story} />
 
       <LocationSection id="contact" info={site.storeInfo} />
+
+      <WhyOrderStrip perks={site.perks} />
 
       <SiteFooter
         logoUrl={site.logoUrl}

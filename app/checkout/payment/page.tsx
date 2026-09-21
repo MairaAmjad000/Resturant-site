@@ -20,6 +20,9 @@ export default async function PaymentPage() {
         logoUrl={site.logoUrl}
         logoAlt={site.name}
         currentStep="payment"
+        navLinks={site.navLinks}
+        categories={categories}
+        deals={deals}
       />
 
       <PaymentClient

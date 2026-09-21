@@ -5,10 +5,20 @@ import type { DealItem } from "@/types/menu";
 interface DealsSectionProps {
   id?: string;
   deals: DealItem[];
+  quantities?: Record<string, number>;
   onAddDeal?: (dealId: string) => void;
+  onIncreaseDeal?: (dealId: string) => void;
+  onDecreaseDeal?: (dealId: string) => void;
 }
 
-export default function DealsSection({ id, deals, onAddDeal }: DealsSectionProps) {
+export default function DealsSection({
+  id,
+  deals,
+  quantities = {},
+  onAddDeal,
+  onIncreaseDeal,
+  onDecreaseDeal,
+}: DealsSectionProps) {
   if (deals.length === 0) return null;
 
   return (
@@ -27,7 +37,14 @@ export default function DealsSection({ id, deals, onAddDeal }: DealsSectionProps
 
       <div className="mt-6 flex flex-col gap-5">
         {deals.map((deal) => (
-          <DealCard key={deal.id} deal={deal} onAdd={onAddDeal} />
+          <DealCard
+            key={deal.id}
+            deal={deal}
+            quantity={quantities[deal.id] ?? 0}
+            onAdd={onAddDeal}
+            onIncrease={onIncreaseDeal}
+            onDecrease={onDecreaseDeal}
+          />
         ))}
       </div>
     </section>

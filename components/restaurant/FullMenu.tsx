@@ -17,6 +17,8 @@ interface FullMenuProps {
   onToggleFavourite?: (itemId: string) => void;
   onAddItem?: (itemId: string) => void;
   onAddDeal?: (dealId: string) => void;
+  onIncreaseDeal?: (dealId: string) => void;
+  onDecreaseDeal?: (dealId: string) => void;
   onIncrease?: (itemId: string) => void;
   onDecrease?: (itemId: string) => void;
 }
@@ -31,6 +33,8 @@ export default function FullMenu({
   onToggleFavourite,
   onAddItem,
   onAddDeal,
+  onIncreaseDeal,
+  onDecreaseDeal,
   onIncrease,
   onDecrease,
 }: FullMenuProps) {
@@ -93,8 +97,8 @@ export default function FullMenu({
         {dishCount} dishes, cooked to order
       </h1>
 
-      {/* Menu search — filters items live as you type */}
-      <div className="mt-8 max-w-xl">
+      {/* Menu search — filters items live as you type; full content width on desktop */}
+      <div className="mt-8 max-w-xl lg:max-w-none">
         <SearchBar
           value={query}
           onChange={setQuery}
@@ -145,7 +149,14 @@ export default function FullMenu({
           ) : (
             <>
               {deals.length > 0 && (
-                <DealsSection id="deals" deals={deals} onAddDeal={onAddDeal} />
+                <DealsSection
+                  id="deals"
+                  deals={deals}
+                  quantities={quantities}
+                  onAddDeal={onAddDeal}
+                  onIncreaseDeal={onIncreaseDeal}
+                  onDecreaseDeal={onDecreaseDeal}
+                />
               )}
               {categories.map((category) => (
                 <MenuCategorySection
