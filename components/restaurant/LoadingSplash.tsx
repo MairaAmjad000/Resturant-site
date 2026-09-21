@@ -15,11 +15,37 @@ export default function LoadingSplash() {
   useEffect(() => {
     // Every refresh starts at the top of the page — the browser would
     // otherwise restore the previous scroll position mid-page while the
-    // splash is still covering it.
+    // splash is still covering it. Deep links (/#menu, /#story, …) are
+    // exempt: they scroll to their section once the splash lifts.
     window.history.scrollRestoration = "manual";
-    window.scrollTo(0, 0);
 
-    const timer = window.setTimeout(() => setDone(true), 900);
+    const hash = window.location.hash;
+    if (!hash || hash === "#top") {
+      window.scrollTo(0, 0);
+    }
+
+    const timer = window.setTimeout(() => {
+      setDone(true);
+
+      /* Cross-page deep link (e.g. the checkout navbar's Contact): the
+         native hash jump happened while the splash was still up and the
+         splash skipped its scroll-to-top, so take the user to the section
+         as the splash fades. scroll-behavior:smooth in globals.css turns
+         scrollTo into an animation — force auto so the landing is exact
+         (and works where programmatic smooth scrolls are dropped). */
+      if (hash && hash !== "#top") {
+        const target = document.getElementById(hash.substring(1));
+        if (target) {
+          const html = document.documentElement;
+          const previous = html.style.scrollBehavior;
+          html.style.scrollBehavior = "auto";
+          window.scrollTo({
+            top: target.getBoundingClientRect().top + window.scrollY - 80,
+          });
+          html.style.scrollBehavior = previous;
+        }
+      }
+    }, 900);
     return () => window.clearTimeout(timer);
   }, []);
 

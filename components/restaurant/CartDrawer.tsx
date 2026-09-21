@@ -177,7 +177,7 @@ export default function CartDrawer({
 >
   <Bike className="h-[21px] w-[21px]" />
   <span className="text-[14px] font-semibold leading-none">Delivery</span>
-  <span className="text-[11px] leading-none text-black">From 17:00</span>
+  <span className="text-[11px] leading-none text-white">From 17:00</span>
 </button>
 
 <button
@@ -188,7 +188,7 @@ export default function CartDrawer({
 >
   <ShoppingBag className="h-[21px] w-[21px]" />
   <span className="text-[14px] font-semibold leading-none">Collection</span>
-  <span className="text-[11px] leading-none text-black">From 17:00</span>
+  <span className="text-[11px] leading-none text-white">From 17:00</span>
 </button>
 
           </div>

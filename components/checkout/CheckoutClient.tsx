@@ -410,7 +410,7 @@ export default function CheckoutClient({
 
               {phoneError && phoneInvalid && (
                 <p className="mt-2 text-[12px] font-semibold text-[#e5484d]">
-                  Enter a valid UK phone number starting with +44 (e.g. +447911123456) — update it via the button above.
+                  Enter a valid UK mobile number starting with +447 (e.g. +447911123456) — update it via the button above.
                 </p>
               )}
             </div>

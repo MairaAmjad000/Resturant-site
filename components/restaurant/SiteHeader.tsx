@@ -479,7 +479,7 @@ function AuthModal({ onClose, onSuccess }: AuthModalProps) {
                 value={registerPhone}
                 onChange={(value) => setRegisterPhone(normaliseUKPhoneInput(value))}
                 invalid={registerPhoneInvalid}
-                error="Enter a valid UK phone number starting with +44 (e.g. +447911123456)."
+                error="Enter a valid UK mobile number starting with +447 (e.g. +447911123456)."
               />
 
               {/* Email */}

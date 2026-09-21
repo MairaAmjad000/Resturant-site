@@ -18,15 +18,14 @@ export function deliveryFeeFor(orderType: OrderType, orderValue: number): number
 }
 
 /**
- * Validates a UK phone number in international format.
- * Requires +44 followed by 9–10 digits (UK mobiles/landlines
- * drop the leading 0 in +44 form, e.g. +447911123456).
+ * Validates a UK MOBILE phone number in international format.
+ * Requires +447 followed by exactly 9 digits (UK mobiles are 07xxx xxxxxx,
+ * which is +447 xxx xxxxxx in international form — e.g. +447911123456).
+ * Landlines (+441…, +442…) are rejected: the checkout needs a mobile.
  */
 export function isValidUKPhone(raw: string): boolean {
   const normalized = raw.replace(/[\s\-()]/g, "");
-  // +44 followed by 9–10 digits. The first digit after +44 is never 0
-  // (e.g. +44 7911 123456 — the trunk 0 is dropped).
-  return /^\+44[1-9]\d{8,9}$/.test(normalized);
+  return /^\+447\d{9}$/.test(normalized);
 }
 
 /**

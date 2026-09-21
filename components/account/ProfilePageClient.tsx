@@ -161,7 +161,7 @@ export default function ProfilePageClient() {
 
     if (phone.trim() && !isValidUKPhone(phone)) {
       setStatus("error");
-      setErrorMessage("Enter a valid UK phone number starting with +44 (e.g. +447911123456).");
+      setErrorMessage("Enter a valid UK mobile number starting with +447 (e.g. +447911123456).");
       return;
     }
 

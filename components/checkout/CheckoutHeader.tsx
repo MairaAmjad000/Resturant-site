@@ -183,10 +183,12 @@ export default function CheckoutHeader({
           {navLinks.map((link) => {
             const isActive = link.href === "#top"; // Home — mirrors the site header's top-of-page state
 
+            /* Plain <a>, not <Link>: a full page load lets the app's loading
+               splash play, then it lands the user on the requested section. */
             return (
-              <Link
+              <a
                 key={link.href}
-                href={`/${link.href}`}
+                href={link.href === "#top" ? "/" : `/${link.href}`}
                 aria-current={isActive ? "page" : undefined}
                 className={`rounded-full px-4 py-2 text-sm font-medium ${
                   isActive
@@ -195,7 +197,7 @@ export default function CheckoutHeader({
                 }`}
               >
                 {link.label}
-              </Link>
+              </a>
             );
           })}
         </nav>
