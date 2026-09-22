@@ -19,6 +19,7 @@ import {
 import { useStoredCart } from "@/lib/use-stored-cart";
 import { buildCartCatalog, lineTotal } from "@/lib/cart";
 import { readWallet } from "@/lib/account";
+import { OPENING_TIME } from "@/lib/branches";
 import { RadioDot, CheckBox } from "@/components/ui/OptionControls";
 import type { SiteContent } from "@/lib/menu-data";
 import type { DealItem, MenuCategory } from "@/types/menu";
@@ -135,7 +136,7 @@ export default function PaymentClient({
 
   const timingLabel =
     !session || timing === "asap"
-      ? "17:00"
+      ? OPENING_TIME
       : session.scheduledTime
         ? `${session.scheduledDate} · ${session.scheduledTime}`
         : session.scheduledDate;

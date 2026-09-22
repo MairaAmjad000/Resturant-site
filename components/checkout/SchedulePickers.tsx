@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Calendar, ChevronDown, ChevronUp, Clock } from "lucide-react";
+import { CLOSING_TIME } from "@/lib/branches";
 
 /* =========================================================
    Shared field chrome — identical to the checkout inputs
@@ -308,12 +309,13 @@ interface TimePickerProps {
   error?: boolean;
 }
 
-const CLOSE_MINUTES = 22 * 60 + 30; // 22:30
-
 function toMinutes(hhmm: string): number {
   const [h, m] = hhmm.split(":").map(Number);
   return h * 60 + m;
 }
+
+/** Daily closing time in minutes since midnight (from lib). */
+const CLOSE_MINUTES = toMinutes(CLOSING_TIME); // 22:30
 
 function fromMinutes(total: number): string {
   const h = Math.floor(total / 60);

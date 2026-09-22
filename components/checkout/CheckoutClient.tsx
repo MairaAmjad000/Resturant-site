@@ -41,6 +41,7 @@ import {
   type WalletState,
 } from "@/lib/account";
 import { buildCartCatalog, lineTotal } from "@/lib/cart";
+import { OPENING_TIME } from "@/lib/branches";
 import type { SiteContent } from "@/lib/menu-data";
 import type { DealItem, MenuCategory } from "@/types/menu";
 
@@ -318,7 +319,7 @@ export default function CheckoutClient({
 
   const timingLabel =
     timing === "asap"
-      ? "17:00"
+      ? OPENING_TIME
       : scheduledTime
         ? `${scheduledDate} · ${scheduledTime}`
         : scheduledDate;
@@ -729,12 +730,12 @@ export default function CheckoutClient({
 
             {timing === "asap" ? (
               <p className="mt-4 text-[13px] text-[#9aa0a5]">
-                Opens at 17:00. You can still schedule a future order.
+                Opens at {OPENING_TIME}. You can still schedule a future order.
               </p>
             ) : (
               <>
                 <p className="mt-4 text-[13px] text-[#9aa0a5]">
-                  Opens at 17:00. You can still schedule a future order.
+                  Opens at {OPENING_TIME}. You can still schedule a future order.
                 </p>
 
                 <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -751,7 +752,7 @@ export default function CheckoutClient({
                   <ThemedTimePicker
                     label="Time"
                     value={scheduledTime}
-                    min="17:00"
+                    min={OPENING_TIME}
                     error={scheduleError && !scheduledTime.trim()}
                     onChange={setScheduledTime}
                   />

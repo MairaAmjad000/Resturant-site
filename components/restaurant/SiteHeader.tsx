@@ -10,6 +10,7 @@ import UserAvatar from "@/components/account/UserAvatar";
 import BranchSelector from "./BranchSelector";
 import { emitToast } from "@/components/ui/ToastProvider";
 import { normaliseUKPhoneInput, isValidUKPhone } from "@/lib/checkout-session";
+import { OPENING_TIME } from "@/lib/branches";
 import type { NavLink as NavLinkType } from "@/types/menu";
 import {
   AUTH_STORAGE_KEY,
@@ -1277,7 +1278,7 @@ export default function SiteHeader({
       {welcomeOpen && (
         <OpeningWelcomeModal
           restaurantName={logoAlt || "Porto Piri Piri"}
-          opensAt="17:00"
+          opensAt={OPENING_TIME}
           onClose={() => setWelcomeOpen(false)}
           onPreOrder={() => {
             setWelcomeOpen(false);

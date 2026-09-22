@@ -16,6 +16,7 @@ import {
   type SavedAddress,
 } from "@/lib/account";
 import { normaliseUKPhoneInput, isValidUKPhone } from "@/lib/checkout-session";
+import { normalisePostcode, validateUKPostcode } from "@/lib/delivery";
 
 /* =========================================================
    FLOATING-LABEL FIELD
@@ -89,6 +90,7 @@ interface AddressForm {
   house: string;
   floor: string;
   road: string;
+  postcode: string;
 }
 
 const EMPTY_FORM: AddressForm = {
@@ -99,6 +101,7 @@ const EMPTY_FORM: AddressForm = {
   house: "",
   floor: "",
   road: "",
+  postcode: "",
 };
 
 const TYPE_OPTIONS: { value: AddressType; label: string }[] = [
@@ -136,6 +139,7 @@ function AddressFormCard({
     if (!form.address.trim()) missing.push("Address");
     if (!form.house.trim()) missing.push("House");
     if (!form.road.trim()) missing.push("Road");
+    if (!form.postcode.trim()) missing.push("Postcode");
 
     if (missing.length > 0) {
       setError(`Please fill in: ${missing.join(", ")}`);
@@ -144,6 +148,11 @@ function AddressFormCard({
 
     if (!isValidUKPhone(form.contactPhone)) {
       setError("Enter a valid UK mobile number starting with +447 (e.g. +447911123456).");
+      return;
+    }
+
+    if (!validateUKPostcode(form.postcode).valid) {
+      setError("Enter a valid UK postcode (e.g. G41 3YN).");
       return;
     }
 
@@ -243,6 +252,14 @@ function AddressFormCard({
           value={form.road}
           onChange={(value) => set("road", value)}
           placeholder="Kilmarnock Road"
+          required
+        />
+
+        <AddressField
+          label="Postcode"
+          value={form.postcode}
+          onChange={(value) => set("postcode", normalisePostcode(value))}
+          placeholder="G41 3YN"
           required
         />
       </div>
@@ -394,6 +411,7 @@ export default function AddressesPageClient() {
       house: form.house.trim(),
       floor: form.floor.trim(),
       road: form.road.trim(),
+      postcode: form.postcode.trim(),
     };
 
     const next = [address, ...addresses];

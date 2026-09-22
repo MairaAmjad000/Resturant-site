@@ -373,6 +373,10 @@ export interface LoyaltyState {
 
 /** Conversion rate: 10 points = £1.00. */
 export const LOYALTY_RATE = 10;
+/** Orders above this £ value earn LOYALTY_EARNED_POINTS on confirmation. */
+export const LOYALTY_EARN_THRESHOLD = 50;
+/** Points awarded for a qualifying order. */
+export const LOYALTY_EARNED_POINTS = 10;
 
 export function readLoyaltyPoints(): LoyaltyState {
   try {

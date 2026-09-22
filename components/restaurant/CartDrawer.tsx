@@ -13,6 +13,7 @@ import {
 import type { CartLine } from "@/lib/cart";
 import { MAX_ITEM_QUANTITY, lineTotal, selectionsSummary } from "@/lib/cart";
 import { deliveryFeeFor, FREE_DELIVERY_THRESHOLD, saveCheckoutSession, readCheckoutSession } from "@/lib/checkout-session";
+import { OPENING_TIME } from "@/lib/branches";
 
 type OrderType = "delivery" | "collection";
 
@@ -177,7 +178,7 @@ export default function CartDrawer({
 >
   <Bike className="h-[21px] w-[21px]" />
   <span className="text-[14px] font-semibold leading-none">Delivery</span>
-  <span className="text-[11px] leading-none text-white">From 17:00</span>
+  <span className="text-[11px] leading-none text-white">From {OPENING_TIME}</span>
 </button>
 
 <button
@@ -188,7 +189,7 @@ export default function CartDrawer({
 >
   <ShoppingBag className="h-[21px] w-[21px]" />
   <span className="text-[14px] font-semibold leading-none">Collection</span>
-  <span className="text-[11px] leading-none text-white">From 17:00</span>
+  <span className="text-[11px] leading-none text-white">From {OPENING_TIME}</span>
 </button>
 
           </div>
@@ -308,7 +309,7 @@ export default function CartDrawer({
                 ? subtotal >= FREE_DELIVERY_THRESHOLD
                   ? "Free delivery — order is above the £20.00 threshold."
                   : `Standard delivery £3.99 — add £${(FREE_DELIVERY_THRESHOLD - subtotal).toFixed(2)} more for free delivery.`
-                : "Collection from Shawlands from 17:00."}
+                : `Collection from Shawlands from ${OPENING_TIME}.`}
             </p>
           )}
 

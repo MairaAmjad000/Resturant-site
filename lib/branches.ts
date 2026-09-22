@@ -27,6 +27,17 @@ export const BRANCHES: Branch[] = [
 export const DEFAULT_BRANCH_ID = BRANCHES[0].id;
 
 /* =========================================================
+   OPENING HOURS
+   Single source of truth — used by the welcome modal, cart
+   drawer, checkout/payment summaries and the schedule pickers.
+========================================================= */
+
+/** "17:00" — the takeaway's daily opening time. */
+export const OPENING_TIME = "17:00";
+/** "22:30" — the takeaway's daily closing time. */
+export const CLOSING_TIME = "22:30";
+
+/* =========================================================
    TINY STORE (useSyncExternalStore-compatible)
    Same pattern as lib/auth.ts — cached snapshot, storage
    event keeps other tabs in sync.

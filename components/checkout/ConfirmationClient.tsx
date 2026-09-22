@@ -17,7 +17,7 @@ import {
 } from "@/lib/checkout-session";
 import { useStoredCart } from "@/lib/use-stored-cart";
 import { buildCartCatalog, clearStoredCart, lineTotal, selectionsSummary } from "@/lib/cart";
-import { appendOrderToHistory, pushNotification, readWallet, addWalletFunds, addLoyaltyPoints, type OrderStatus } from "@/lib/account";
+import { appendOrderToHistory, pushNotification, readWallet, addWalletFunds, addLoyaltyPoints, LOYALTY_EARN_THRESHOLD, LOYALTY_EARNED_POINTS, type OrderStatus } from "@/lib/account";
 import type { SiteContent } from "@/lib/menu-data";
 import type { DealItem, MenuCategory } from "@/types/menu";
 
@@ -247,7 +247,7 @@ export default function ConfirmationClient({
     setConfirmed(true);
 
     // Reward: orders above £50 (pre-wallet, post-coupon value) earn 10 points.
-    const earnedPoints = orderTotal > 50 ? 10 : 0;
+    const earnedPoints = orderTotal > LOYALTY_EARN_THRESHOLD ? LOYALTY_EARNED_POINTS : 0;
     if (earnedPoints > 0) {
       addLoyaltyPoints(earnedPoints, `Order ${placed.orderNumber}`);
       setLoyaltyEarned(earnedPoints);
