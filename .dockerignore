@@ -1,0 +1,54 @@
+# ---------------------------------------------------------------------------
+# Docker build context exclusions — keeps the image small and builds fast.
+# Anything listed here is never sent to the Docker daemon.
+# ---------------------------------------------------------------------------
+
+# Dependencies (re-installed inside the image)
+node_modules
+**/node_modules
+.pnp
+.pnp.*
+
+# Next.js build artifacts (rebuilt inside the image)
+.next
+**/.next
+out
+**/out
+build
+next-env.d.ts
+
+# Git / VCS
+.git
+.gitignore
+.gitattributes
+
+# Docker files themselves (not needed inside the image)
+Dockerfile
+docker-compose.yml
+docker-compose.*.yml
+.dockerignore
+
+# Env files — secrets must never be baked into an image.
+# Pass them at runtime: docker run --env-file .env.local
+.env
+.env.*
+!.env.example
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Freebuff / tooling
+.freebuff
+
+# Docs not needed at runtime
+BACKEND_README.md
+README.md
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+.idea
+.vscode
